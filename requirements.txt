@@ -1,0 +1,5 @@
+librosa==0.9.2
+music21
+mutagen
+piano_transcription_inference
+pymupdf

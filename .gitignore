@@ -1,0 +1,4 @@
+example/*
+*__pycache__*
+flagged/*
+test.*

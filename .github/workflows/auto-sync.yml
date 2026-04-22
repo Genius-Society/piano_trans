@@ -27,6 +27,7 @@ jobs:
           GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         run: |
           git clone https://oauth2:$HF_TOKEN@huggingface.co/spaces/Genius-Society/piano_trans ../hf_repo
+          mv -f ./.github/restart.py ../
           rm -rf ./LICENSE ./README.md ./.github ./.git ./.gitattributes ./.gitignore
           cp -rf ../hf_repo/.git ../hf_repo/README.md ../hf_repo/requirements.txt ./
           if [ -n "$(git status --porcelain)" ]; then
@@ -48,7 +49,6 @@ jobs:
           GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         run: |
           git clone https://oauth2:$MS_TOKEN@www.modelscope.cn/studios/Genius-Society/piano_trans.git ../ms_repo
-          mv -f ./.github/restart.py ../
           rm -rf ./.git
           cp -rf ../ms_repo/.git ../ms_repo/requirements.txt ../ms_repo/MuseScore.AppImage ./
           if [ -n "$(git status --porcelain)" ]; then

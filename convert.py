@@ -1,42 +1,35 @@
 import os
 import sys
 import fitz
-import requests
+import shutil
 import subprocess
 from PIL import Image
 from music21 import converter
 
+EN_US = os.getenv("LANG") != "zh_CN.UTF-8"
+TMP_DIR = "./__pycache__"
 
-def download(url: str, directory: str, filename: str):
-    if directory != "" and not os.path.exists(directory):
-        os.makedirs(directory)
+if EN_US:
+    import huggingface_hub
 
-    file_path = os.path.join(directory, filename)
-    response = requests.get(url, stream=True)
-    if response.status_code == 200:
-        with open(file_path, "wb") as file:
-            for chunk in response.iter_content(chunk_size=1024):
-                if chunk:
-                    file.write(chunk)
+    MODEL_DIR = huggingface_hub.snapshot_download(
+        "Genius-Society/piano_trans",
+        cache_dir=TMP_DIR,
+    )
 
-        print(f"文件已下载并保存到 {file_path}")
+else:
+    import modelscope
 
-    else:
-        print(f"下载文件失败。状态代码: {response.status_code}")
-
-    return os.path.join(directory, filename)
+    MODEL_DIR = modelscope.snapshot_download(
+        "Genius-Society/piano_trans",
+        cache_dir=TMP_DIR,
+    )
 
 
 if sys.platform.startswith("linux"):
     apkname = "MuseScore.AppImage"
+    shutil.move(os.path.realpath(f"{MODEL_DIR}/{apkname}"), f"./{apkname}")
     extra_dir = "squashfs-root"
-    if not os.path.exists(apkname):
-        download(
-            url="https://www.modelscope.cn/studio/Genius-Society/piano_trans/resolve/master/MuseScore.AppImage",
-            directory="./",
-            filename=apkname,
-        )
-
     if not os.path.exists(extra_dir):
         subprocess.run(["chmod", "+x", f"./{apkname}"])
         subprocess.run([f"./{apkname}", "--appimage-extract"])

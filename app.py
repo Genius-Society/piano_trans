@@ -5,27 +5,7 @@ import gradio as gr
 from mutagen.mp3 import MP3
 from mutagen.flac import FLAC
 from piano_transcription_inference import PianoTranscription, load_audio, sample_rate
-from convert import midi2xml, xml2abc, xml2mxl, xml2jpg
-
-EN_US = os.getenv("LANG") != "zh_CN.UTF-8"
-TMP_DIR = "./__pycache__"
-
-if EN_US:
-    import huggingface_hub
-
-    MODEL_PATH = huggingface_hub.snapshot_download(
-        "Genius-Society/piano_trans",
-        cache_dir=TMP_DIR,
-    )
-
-else:
-    import modelscope
-
-    MODEL_PATH = modelscope.snapshot_download(
-        "Genius-Society/piano_trans",
-        cache_dir=TMP_DIR,
-    )
-
+from convert import midi2xml, xml2abc, xml2mxl, xml2jpg, EN_US, TMP_DIR, MODEL_DIR
 
 ZH2EN = {
     "五线谱": "Staff",
@@ -88,7 +68,7 @@ def audio2midi(audio_path: str, cache_dir: str):
     audio, _ = load_audio(audio_path, sr=sample_rate, mono=True)
     transcriptor = PianoTranscription(
         device="cuda" if torch.cuda.is_available() else "cpu",
-        checkpoint_path=f"{MODEL_PATH}/CRNN_note_F1=0.9677_pedal_F1=0.9186.pth",
+        checkpoint_path=f"{MODEL_DIR}/CRNN_note_F1=0.9677_pedal_F1=0.9186.pth",
     )
     midi_path = f"{cache_dir}/output.mid"
     transcriptor.transcribe(audio, midi_path)
@@ -112,7 +92,7 @@ def upl_infer(audio_path: str, cache_dir=f"{TMP_DIR}/cache"):
     return status, midi, pdf, xml, mxl, abc, jpg
 
 
-def find_audio_files(folder_path=f"{MODEL_PATH}/examples"):
+def find_audio_files(folder_path=f"{MODEL_DIR}/examples"):
     wav_files = []
     for root, _, files in os.walk(folder_path):
         for file in files:

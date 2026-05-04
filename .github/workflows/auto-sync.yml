@@ -30,10 +30,10 @@ jobs:
           GIT_NAME: ${{ secrets.GIT_NAME }}
           GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         run: |
-          git clone https://oauth2:$HF_TOKEN@huggingface.co/spaces/xGPU-Explorers/piano_trans ../hf_repo
           mv -f ./.github/restart.py ../
-          rm -rf ./LICENSE ./README.md ./.github ./.git ./.gitattributes ./.gitignore
-          cp -rf ../hf_repo/.git ../hf_repo/README.md ../hf_repo/requirements.txt ./
+          git clone https://oauth2:$HF_TOKEN@huggingface.co/spaces/xGPU-Explorers/piano_trans ../hf_repo
+          rm -rf ./.git* ./LICENSE
+          cp -rf ../hf_repo/README.md ../hf_repo/requirements.txt ../hf_repo/.git ./
           if [ -n "$(git status --porcelain)" ]; then
             echo "Files are different, committing changes..."
             git config --global user.name "$GIT_NAME"
@@ -54,7 +54,7 @@ jobs:
         run: |
           git clone https://oauth2:$MS_TOKEN@www.modelscope.cn/studios/Genius-Society/piano_trans.git ../ms_repo
           rm -rf ./.git ./README.md
-          cp -rf ../ms_repo/.git ../ms_repo/.gitattributes ../ms_repo/requirements.txt ../ms_repo/MuseScore.AppImage ./
+          cp -rf ../ms_repo/requirements.txt ../ms_repo/.git ./
           if [ -n "$(git status --porcelain)" ]; then
             echo "Files are different, committing changes..."
             git config --global user.name "$GIT_NAME"

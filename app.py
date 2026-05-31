@@ -125,4 +125,8 @@ if __name__ == "__main__":
         flagging_mode="never",
         cache_examples=False,
         examples=find_audio_files(),
-    ).launch(css="#gradio-share-link-button-0 { display: none; }", ssr_mode=False)
+    ).launch(
+        theme=gr.themes.Glass(),
+        css="#gradio-share-link-button-0 { display: none; }",
+        ssr_mode=False,
+    )

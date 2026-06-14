@@ -5,7 +5,7 @@ import gradio as gr
 from mutagen.mp3 import MP3
 from mutagen.flac import FLAC
 from piano_transcription_inference import PianoTranscription, load_audio, sample_rate
-from convert import midi2xml, xml2abc, xml2mxl, xml2jpg, EN_US, TMP_DIR, MODEL_DIR
+from convert import midi2xml, xml2abc, xml2mxl, xml2jpg, TMP_DIR, MODEL_DIR
 
 ZH2EN = {
     "五线谱": "Staff",
@@ -19,10 +19,6 @@ ZH2EN = {
     "钢琴转谱工具": "Piano Transcription Tool",
     "请上传音频 100% 后再点提交": "Please make sure the audio is completely uploaded before clicking Submit",
 }
-
-
-def _L(zh_txt: str):
-    return ZH2EN[zh_txt] if EN_US else zh_txt
 
 
 def clean_cache(cache_dir):
@@ -104,24 +100,28 @@ def find_audio_files(folder_path=f"{MODEL_DIR}/examples"):
 
 
 if __name__ == "__main__":
+    i18n = gr.I18n(
+        zh={key: key for key in ZH2EN},
+        en=ZH2EN,
+    )
     gr.Interface(
         fn=upl_infer,
-        inputs=gr.Audio(label=_L("上传音频"), type="filepath"),
+        inputs=gr.Audio(label=i18n("上传音频"), type="filepath"),
         outputs=[
-            gr.Textbox(label=_L("状态栏"), buttons=["copy"]),
-            gr.File(label=_L("下载 MIDI")),
-            gr.File(label=_L("下载 PDF 乐谱")),
-            gr.File(label=_L("下载 MusicXML")),
-            gr.File(label=_L("下载 MXL")),
-            gr.TextArea(label=_L("ABC 记谱"), buttons=["fullscreen", "copy"]),
+            gr.Textbox(label=i18n("状态栏"), buttons=["copy"]),
+            gr.File(label=i18n("下载 MIDI")),
+            gr.File(label=i18n("下载 PDF 乐谱")),
+            gr.File(label=i18n("下载 MusicXML")),
+            gr.File(label=i18n("下载 MXL")),
+            gr.TextArea(label=i18n("ABC 记谱"), buttons=["fullscreen", "copy"]),
             gr.Image(
-                label=_L("五线谱"),
+                label=i18n("五线谱"),
                 type="filepath",
                 buttons=["download", "fullscreen"],
             ),
         ],
-        title=_L("钢琴转谱工具"),
-        description=_L("请上传音频 100% 后再点提交"),
+        title=i18n("钢琴转谱工具"),
+        description=i18n("请上传音频 100% 后再点提交"),
         flagging_mode="never",
         cache_examples=False,
         examples=find_audio_files(),
@@ -129,4 +129,5 @@ if __name__ == "__main__":
         theme=gr.themes.Glass(),
         css="#gradio-share-link-button-0 { display: none; }",
         ssr_mode=False,
+        i18n=i18n,
     )

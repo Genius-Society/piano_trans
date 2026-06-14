@@ -12,12 +12,11 @@ ZH2EN = {
     "状态栏": "Status",
     "下载 MXL": "Download MXL",
     "ABC 记谱": "ABC notation",
-    "上传音频": "Upload an audio",
+    "上传音频 (请上传音频 100% 后再点提交)": "Upload an audio (Please make sure the audio is completely uploaded before clicking Submit)",
     "下载 MIDI": "Download MIDI",
     "下载 PDF 乐谱": "Download PDF score",
     "下载 MusicXML": "Download MusicXML",
     "钢琴转谱工具": "Piano Transcription Tool",
-    "请上传音频 100% 后再点提交": "Please make sure the audio is completely uploaded before clicking Submit",
 }
 
 
@@ -106,7 +105,9 @@ if __name__ == "__main__":
     )
     gr.Interface(
         fn=upl_infer,
-        inputs=gr.Audio(label=i18n("上传音频"), type="filepath"),
+        inputs=gr.Audio(
+            label=i18n("上传音频 (请上传音频 100% 后再点提交)"), type="filepath"
+        ),
         outputs=[
             gr.Textbox(label=i18n("状态栏"), buttons=["copy"]),
             gr.File(label=i18n("下载 MIDI")),
@@ -121,7 +122,6 @@ if __name__ == "__main__":
             ),
         ],
         title=i18n("钢琴转谱工具"),
-        description=i18n("请上传音频 100% 后再点提交"),
         flagging_mode="never",
         cache_examples=False,
         examples=find_audio_files(),
